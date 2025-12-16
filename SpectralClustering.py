@@ -36,10 +36,15 @@ class SpectralClustering:
             mask = y < clusters
             X = X[mask]
             y = y[mask]
-            
+        
+        plt.scatter(X[:, 0], X[:, 1], c="blue", s=30, cmap='viridis', edgecolor='k')
+        plt.title("Data")
+        plt.tight_layout()
+        plt.show()
+
         return X, y
 
-    def fit_predict(self, X):
+    def fit_predict(self, X, vis=False):
         # Similarity Graph
         euDist = squareform(pdist(X, 'sqeuclidean'))
         S = np.exp(-euDist / (2 * self.sigma * self.sigma))
@@ -68,6 +73,13 @@ class SpectralClustering:
         kmeans = KMeans(n_clusters=self.clusters, random_state=self.randomState)
         self.labels_ = kmeans.fit_predict(U)
 
+        # Plot final result
+        if vis == True:
+            plt.scatter(X[:, 0], X[:, 1], c=self.labels_, s=30, cmap='viridis', edgecolor='k')
+            plt.title("Spectral Clustering")
+            plt.tight_layout()
+            plt.show()
+
         return self.labels_
     
     def compareToKMeans(self, X):
@@ -82,7 +94,8 @@ class SpectralClustering:
         plt.subplot(1, 2, 1)
         plt.scatter(X[:, 0], X[:, 1], c=ansKmeans, s=30, cmap='viridis', edgecolor='k')
         plt.title("Standard K-Means")
-        # Plot 2: Spectral Clustering
+        
+        #Spectral Clustering
         plt.subplot(1, 2, 2)
         plt.scatter(X[:, 0], X[:, 1], c=self.labels_, s=30, cmap='viridis', edgecolor='k')
         plt.title("Spectral Clustering")
